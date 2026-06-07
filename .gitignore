@@ -1,0 +1,8 @@
+.env
+# Frontend specific ignores
+Frontend/node_modules/
+Frontend/.next/
+
+# General ignores (applies to root and all subfolders)
+.DS_Store
+*.log
