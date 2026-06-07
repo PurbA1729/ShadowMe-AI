@@ -9,9 +9,7 @@ import {
   FileText, 
   Image as ImageIcon, 
   StickyNote, 
-  Sparkles,
-  Terminal,
-  AlertCircle
+  Terminal
 } from "lucide-react";
 import { useMemory } from "@/context/MemoryContext";
 
@@ -60,20 +58,20 @@ export const UploadView: React.FC = () => {
 
   // Pipeline step names
   const steps = [
-    { number: 1, label: "Uploading Trace Data", detail: "Transferring binary packets to secure vault..." },
-    { number: 2, label: "OCR & Text Scanning", detail: "Extracting letters, numbers, and receipt totals..." },
-    { number: 3, label: "Object Detection & Spatial Mapping", detail: "Identifying key belongs, anchors, and background layouts..." },
-    { number: 4, label: "Neural Memory Graph Created", detail: "Synthesizing connections and generating timelines..." }
+    { number: 1, label: "Uploading File", detail: "Importing file securely to local storage..." },
+    { number: 2, label: "Scanning Text (OCR)", detail: "Extracting items, prices, dates, and text snippets..." },
+    { number: 3, label: "Detecting Objects", detail: "Locating wallets, keys, or accessories in the image..." },
+    { number: 4, label: "Indexing Connections", detail: "Linking moments and locations to your search index..." }
   ];
 
   return (
     <div className="space-y-8 max-w-5xl mx-auto p-4 md:p-6 text-foreground">
       <div>
         <h2 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-foreground to-slate-500 bg-clip-text text-transparent">
-          Ingest Digital Traces
+          Upload Memories
         </h2>
         <p className="text-slate-400 text-sm mt-1">
-          Upload images, documents, receipts, or notes to compile into the neural memory map.
+          Add photos, receipts, or notes to update your local search index.
         </p>
       </div>
 
@@ -90,7 +88,7 @@ export const UploadView: React.FC = () => {
             }`}
           >
             {/* Visual background rings */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.03)_0%,transparent_60%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.03)_0%,transparent_60%)] pointer-events-none" />
             
             {/* Scanning radar line when uploading */}
             {isProcessingUpload && (
@@ -117,12 +115,12 @@ export const UploadView: React.FC = () => {
                   
                   <div>
                     <h3 className="font-bold text-lg">Drag & drop files here</h3>
-                    <p className="text-slate-400 text-xs mt-1.5 max-w-sm">
-                      Accepts JPG, PNG, PDF, or raw TXT notes. Our parser auto-routes to OCR or Object Detection.
+                    <p className="text-slate-400 text-xs mt-1.5 max-w-sm font-medium">
+                      Supports JPG, PNG, PDF, or TXT notes. Processing runs securely on your local device.
                     </p>
                   </div>
                   
-                  <span className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">
+                  <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">
                     — OR —
                   </span>
 
@@ -190,12 +188,12 @@ export const UploadView: React.FC = () => {
         <div className="lg:col-span-5 space-y-6">
           {/* Preset options */}
           <div className="glass-panel rounded-3xl p-5 border border-white/5 space-y-4">
-            <h3 className="text-sm font-bold text-foreground uppercase tracking-wider pb-2 border-b border-white/5">
-              Simulate Preset Traces
+            <h3 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pb-2 border-b border-white/5">
+              Test Uploads
             </h3>
             
-            <p className="text-xs text-slate-400 leading-normal">
-              Click any sample below to simulate uploading trace logs in real-time. Watch how they integrate.
+            <p className="text-xs text-slate-400 leading-normal font-medium">
+              Click a sample file below to test the local processing pipeline and index updates.
             </p>
 
             <div className="space-y-2.5">
@@ -207,11 +205,11 @@ export const UploadView: React.FC = () => {
                   className={`w-full flex items-center justify-between p-3.5 rounded-xl border text-left cursor-pointer transition-all ${
                     selectedPreset === index && isProcessingUpload
                       ? "border-accent bg-accent/5"
-                      : "border-white/5 hover:border-primary/20 bg-white/2 hover:bg-white/4 disabled:opacity-50"
+                      : "border-white/5 hover:border-primary/20 bg-white/1 hover:bg-white/3 disabled:opacity-50"
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-white/5">
+                    <div className="p-2 rounded-lg bg-white/3 border border-white/5">
                       {getPresetIcon(preset.type)}
                     </div>
                     <div>
@@ -229,20 +227,20 @@ export const UploadView: React.FC = () => {
           <div className="glass-panel rounded-3xl p-5 border border-white/5 space-y-3 font-mono">
             <div className="flex items-center gap-2 pb-2 border-b border-white/5">
               <Terminal className="w-4 h-4 text-accent" />
-              <span className="text-xs font-bold text-foreground uppercase tracking-wider">Trace Parser Console</span>
+              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Local Parser Logs</span>
             </div>
             
-            <div className="bg-black/60 rounded-xl p-3 h-36 overflow-y-auto text-[10px] text-slate-400 space-y-1 scrollbar-thin">
-              <p className="text-accent">$ shadowme --watch-vault</p>
-              <p className="text-slate-500">[SYSTEM] Connection secure. Waiting for payload...</p>
+            <div className="bg-black/40 rounded-xl p-3 h-36 overflow-y-auto text-[10px] text-slate-400 space-y-1 scrollbar-thin">
+              <p className="text-accent">$ shadow --watch</p>
+              <p className="text-slate-500">[SYSTEM] Secure vault active. Ready for files...</p>
               {isProcessingUpload && (
                 <>
-                  <p className="text-foreground">🚀 [POST] payload init... OK</p>
-                  {processingStep >= 2 && <p className="text-success">✔ [OCR] Extracted bounding boxes: 24 found</p>}
-                  {processingStep >= 3 && <p className="text-success">✔ [DETECT] Target: Wallet (0.94 probability)</p>}
-                  {processingStep >= 3 && <p className="text-success">✔ [DETECT] Location: Entryway Desk console</p>}
-                  {processingStep >= 4 && <p className="text-primary">✨ [SYNAPSE] Graph edge weights calculated</p>}
-                  {processingStep >= 4 && <p className="text-accent">✨ [SYNC] Database updated. Pipeline idle.</p>}
+                  <p className="text-foreground">[FILE] Import initiated: parsing payload...</p>
+                  {processingStep >= 2 && <p className="text-success">✔ [OCR] Text scan completed: 24 layout bounds indexed</p>}
+                  {processingStep >= 3 && <p className="text-success">✔ [OBJECT] Visual anchor located: Wallet (94% confidence)</p>}
+                  {processingStep >= 3 && <p className="text-success">✔ [SPATIAL] Location reference: Home - Entryway Console</p>}
+                  {processingStep >= 4 && <p className="text-primary">✔ [INDEX] Connection map edges created</p>}
+                  {processingStep >= 4 && <p className="text-accent">✔ [SYNC] Local database updated. Indexing complete.</p>}
                 </>
               )}
             </div>

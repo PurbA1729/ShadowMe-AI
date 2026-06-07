@@ -1,14 +1,11 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
 import { 
-  Settings, 
   User, 
   Lock, 
   Trash2, 
   Cpu, 
-  ShieldCheck, 
   Check, 
   Sparkles,
   Database
@@ -35,7 +32,7 @@ export const SettingsView: React.FC = () => {
           Settings
         </h2>
         <p className="text-slate-400 text-sm mt-1">
-          Adjust security protocols, theme values, and indexing parameters.
+          Manage your account, preferences, and data privacy options.
         </p>
       </div>
 
@@ -46,9 +43,9 @@ export const SettingsView: React.FC = () => {
           
           {/* User Profile Card */}
           <div className="glass-panel rounded-3xl p-5 border border-white/5 space-y-4">
-            <h3 className="text-sm font-bold text-foreground uppercase tracking-wider pb-2 border-b border-white/5 flex items-center gap-2">
+            <h3 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pb-2 border-b border-white/5 flex items-center gap-2">
               <User className="w-4 h-4 text-accent" />
-              Cognitive Profile
+              User Profile
             </h3>
 
             <div className="flex flex-col sm:flex-row items-center gap-4">
@@ -57,13 +54,13 @@ export const SettingsView: React.FC = () => {
               </div>
               <div className="flex-1 text-center sm:text-left space-y-1">
                 <h4 className="text-base font-bold text-foreground">John Doe</h4>
-                <p className="text-xs text-slate-400">Traces recorded: 5 traces • Active lost: 2 items</p>
+                <p className="text-xs text-slate-400 font-medium">Memory traces: 5 records • Active searches: 2 items</p>
                 <div className="flex justify-center sm:justify-start gap-2 pt-1.5">
-                  <span className="text-[9px] bg-primary/10 border border-primary/20 text-accent font-semibold px-2 py-0.5 rounded-full">
-                    Developer Mode
+                  <span className="text-[9px] bg-primary/10 border border-primary/20 text-accent font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
+                    Pro Plan
                   </span>
-                  <span className="text-[9px] bg-white/5 border border-white/5 text-slate-400 font-semibold px-2 py-0.5 rounded-full">
-                    Beta Tester
+                  <span className="text-[9px] bg-white/5 border border-white/5 text-slate-400 font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
+                    Local Sync
                   </span>
                 </div>
               </div>
@@ -72,20 +69,20 @@ export const SettingsView: React.FC = () => {
 
           {/* Theme Settings Selector */}
           <div className="glass-panel rounded-3xl p-5 border border-white/5 space-y-4">
-            <h3 className="text-sm font-bold text-foreground uppercase tracking-wider pb-2 border-b border-white/5 flex items-center gap-2">
+            <h3 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pb-2 border-b border-white/5 flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-accent" />
-              Design Theme
+              Theme Settings
             </h3>
 
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Toggle global styles to align with your dashboard workspace aesthetic.
+            <p className="text-xs text-slate-400 leading-relaxed font-medium">
+              Choose an interface aesthetic that fits your workflow.
             </p>
 
             <div className="grid grid-cols-3 gap-3">
               {[
-                { id: "dark" as const, name: "Premium Dark", desc: "#04091e Cobalt" },
-                { id: "cyberpunk" as const, name: "Cyberpunk", desc: "Cyan & Magenta" },
-                { id: "minimal" as const, name: "Slate Minimal", desc: "Gray & White" }
+                { id: "dark" as const, name: "Premium Dark", desc: "Cobalt & Navy" },
+                { id: "cyberpunk" as const, name: "Cyberpunk", desc: "Cyan & Neon Pink" },
+                { id: "minimal" as const, name: "Slate Minimal", desc: "Monochrome Slate" }
               ].map((t) => {
                 const isActive = theme === t.id;
                 return (
@@ -95,14 +92,14 @@ export const SettingsView: React.FC = () => {
                     className={`p-3.5 rounded-2xl border text-left cursor-pointer transition-all ${
                       isActive
                         ? "border-accent bg-accent/5"
-                        : "border-white/5 hover:border-white/10 bg-white/2"
+                        : "border-white/5 hover:border-white/10 bg-white/1"
                     }`}
                   >
                     <div className="flex justify-between items-center mb-1">
                       <span className="font-bold text-xs text-foreground">{t.name}</span>
                       {isActive && <Check className="w-3.5 h-3.5 text-accent" />}
                     </div>
-                    <span className="text-[9px] text-slate-400">{t.desc}</span>
+                    <span className="text-[9px] text-slate-400 font-medium">{t.desc}</span>
                   </button>
                 );
               })}
@@ -111,14 +108,14 @@ export const SettingsView: React.FC = () => {
 
           {/* Memory retention parameters */}
           <div className="glass-panel rounded-3xl p-5 border border-white/5 space-y-4">
-            <h3 className="text-sm font-bold text-foreground uppercase tracking-wider pb-2 border-b border-white/5 flex items-center gap-2">
+            <h3 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pb-2 border-b border-white/5 flex items-center gap-2">
               <Database className="w-4 h-4 text-accent" />
-              Memory Retention Lifecycle
+              Data Retention
             </h3>
 
             <div className="flex justify-between items-center">
-              <p className="text-xs text-slate-400 leading-normal max-w-sm">
-                Define the lifespan duration of raw digital traces before automatic pruning.
+              <p className="text-xs text-slate-400 leading-normal max-w-sm font-medium">
+                Specify how long raw photos, receipts, and text notes should be stored locally.
               </p>
               <span className="text-sm font-bold font-mono text-accent">{retentionDays} Days</span>
             </div>
@@ -133,9 +130,9 @@ export const SettingsView: React.FC = () => {
             />
             
             <div className="flex justify-between text-[9px] text-slate-500 font-mono">
-              <span>7 days (Pruned weekly)</span>
+              <span>7 days (Prune weekly)</span>
               <span>30 days (Default)</span>
-              <span>90 days (Archived)</span>
+              <span>90 days (Archive)</span>
             </div>
           </div>
         </div>
@@ -144,21 +141,21 @@ export const SettingsView: React.FC = () => {
         <div className="md:col-span-4 space-y-6">
           {/* Security Protocols Panel */}
           <div className="glass-panel rounded-3xl p-5 border border-white/5 space-y-4">
-            <h3 className="text-sm font-bold text-foreground uppercase tracking-wider pb-2 border-b border-white/5 flex items-center gap-2">
+            <h3 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pb-2 border-b border-white/5 flex items-center gap-2">
               <Lock className="w-4 h-4 text-accent" />
-              Security Protocol
+              Privacy & Security
             </h3>
 
             <div className="space-y-4 text-xs">
               {[
-                { label: "End-to-End Encryption", active: true, desc: "Traces encrypted via local keychain." },
-                { label: "OCR Image Parsing", active: true, desc: "Enable optical text scanning." },
-                { label: "Biometric Verification", active: false, desc: "Authenticate prior to retrieval." }
+                { label: "Local Keychain Encryption", active: true, desc: "Encrypt database items on-disk." },
+                { label: "Text Extraction (OCR)", active: true, desc: "Read printed text in photos." },
+                { label: "Biometric Authentication", active: false, desc: "Require FaceID/TouchID on unlock." }
               ].map((sec, idx) => (
                 <div key={idx} className="flex items-start justify-between gap-3">
                   <div>
                     <h4 className="font-bold text-foreground">{sec.label}</h4>
-                    <p className="text-[10px] text-slate-400 mt-0.5">{sec.desc}</p>
+                    <p className="text-[10px] text-slate-400 mt-0.5 leading-relaxed font-medium">{sec.desc}</p>
                   </div>
                   
                   {/* Mock Switch */}
@@ -172,41 +169,41 @@ export const SettingsView: React.FC = () => {
 
           {/* AI Settings Panel */}
           <div className="glass-panel rounded-3xl p-5 border border-white/5 space-y-4">
-            <h3 className="text-sm font-bold text-foreground uppercase tracking-wider pb-2 border-b border-white/5 flex items-center gap-2">
+            <h3 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pb-2 border-b border-white/5 flex items-center gap-2">
               <Cpu className="w-4 h-4 text-accent" />
-              AI Cognitive Weights
+              Search Parameters
             </h3>
 
-            <div className="space-y-3.5 text-xs text-slate-300">
+            <div className="space-y-3.5 text-xs text-slate-300 font-medium">
               <div className="flex justify-between items-center">
-                <span>Location Sensitivity</span>
-                <span className="font-mono text-accent">High</span>
+                <span>Location Match Sensitivity</span>
+                <span className="font-mono text-accent font-bold">High</span>
               </div>
               <div className="flex justify-between items-center">
                 <span>Confidence Threshold</span>
-                <span className="font-mono text-accent">75%</span>
+                <span className="font-mono text-accent font-bold">75%</span>
               </div>
               <div className="flex justify-between items-center">
                 <span>Spatial Search Radius</span>
-                <span className="font-mono text-accent">20m</span>
+                <span className="font-mono text-accent font-bold">20m</span>
               </div>
             </div>
           </div>
 
           {/* Reset button panel */}
           <div className="p-4 rounded-3xl bg-danger/5 border border-danger/20 space-y-3">
-            <h4 className="text-xs font-bold text-danger flex items-center gap-1.5">
+            <h4 className="text-xs font-bold text-danger flex items-center gap-1.5 uppercase tracking-wide">
               <Trash2 className="w-4 h-4" />
               System Reset
             </h4>
-            <p className="text-[10px] text-slate-400 leading-normal">
-              Irreversibly delete all uploaded trace files, memories, and association graphs from server indexes.
+            <p className="text-[10px] text-slate-400 leading-normal font-medium">
+              Irreversibly delete all local records, memory indexes, and connection maps from this device.
             </p>
             <button
               onClick={handleClearDatabase}
               className="w-full bg-danger hover:bg-danger/95 text-white text-xs font-bold py-2.5 rounded-xl transition-all cursor-pointer text-center block mt-1"
             >
-              Clear Memory Engine
+              Clear All Local Data
             </button>
           </div>
 

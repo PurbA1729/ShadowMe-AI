@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, X, MessageSquare, ArrowRight, BrainCircuit } from "lucide-react";
+import { Sparkles, X, ArrowRight, BrainCircuit } from "lucide-react";
 import { useMemory } from "@/context/MemoryContext";
 
 export const AIOrb: React.FC = () => {
@@ -70,13 +70,13 @@ export const AIOrb: React.FC = () => {
                 onClick={() => { setQuickQuery("Where is my wallet?"); }}
                 className="text-[10px] bg-black/5 hover:bg-black/10 dark:bg-white/5 dark:hover:bg-white/10 text-accent border border-white/5 rounded-full px-2.5 py-1 transition-colors cursor-pointer"
               >
-                "Where is my wallet?"
+                &ldquo;Where is my wallet?&rdquo;
               </button>
               <button 
                 onClick={() => { setQuickQuery("Where are my keys?"); }}
                 className="text-[10px] bg-black/5 hover:bg-black/10 dark:bg-white/5 dark:hover:bg-white/10 text-accent border border-white/5 rounded-full px-2.5 py-1 transition-colors cursor-pointer"
               >
-                "Where are my keys?"
+                &ldquo;Where are my keys?&rdquo;
               </button>
             </div>
           </motion.div>

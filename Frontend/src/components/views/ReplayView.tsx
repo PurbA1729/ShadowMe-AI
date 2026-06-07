@@ -1,17 +1,14 @@
 "use client";
 
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { 
-  Calendar, 
   MapPin, 
   Clock, 
   Sparkles, 
   Image as ImageIcon, 
   FileText, 
-  StickyNote, 
-  ChevronRight,
-  TrendingUp
+  StickyNote
 } from "lucide-react";
 import { useMemory, Memory } from "@/context/MemoryContext";
 
@@ -36,11 +33,11 @@ export const ReplayView: React.FC = () => {
   // Generate dynamic AI summaries based on selection
   const getAISummary = () => {
     if (selectedDate === "June 7, 2026") {
-      return "Your day began at home drafting weekly plans at 09:00 AM, after which you visited Blue Bottle Coffee for espresso. You then completed an office whiteboard brainstorming session for the Q3 roadmap at 02:30 PM. Focus is high, but keys and laptop are flagged as misplaced.";
+      return "Your day began at home organizing the study desk at 09:00 AM, followed by a visit to Blue Bottle Coffee. You then completed an office brainstorming session for the database layout at 02:30 PM. Active search alerts are flagged for your wallet and house keys.";
     } else if (selectedDate === "June 6, 2026") {
-      return "Yesterday you finished grocery shopping at Kitchen by noon, leaving your backpack on the bench. Later in the evening at 06:15 PM, you were in the living room and placed your wallet on the entryway table. Wallet has not been photographed since.";
+      return "Yesterday you finished grocery shopping at Whole Foods by noon, setting your black backpack down on the kitchen stool. Later in the evening at 06:15 PM, you rested in the living room and placed your wallet on the entryway table.";
     } else {
-      return "Tracing your memory graph across all active dates: You have compiled 5 traces across office, coffee shop, and home zones. Core activities concentrate on work plans, grocery receipt scans, and living room snapshots. Tracking index stable.";
+      return "Your local memory index has compiled 5 verified records across home, office, and coffee shop locations. Core activities center on workspace setup, grocery receipt imports, and console table photo scans.";
     }
   };
 
@@ -80,10 +77,10 @@ export const ReplayView: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-foreground to-slate-500 bg-clip-text text-transparent">
-            Replay Your Day
+            Timeline Playback
           </h2>
           <p className="text-slate-400 text-sm mt-1">
-            Chronological memory playback and neural location tracing.
+            Explore index records and location logs chronologically.
           </p>
         </div>
 
@@ -139,7 +136,7 @@ export const ReplayView: React.FC = () => {
           className="space-y-8"
         >
           {chronologicalMemories.length > 0 ? (
-            chronologicalMemories.map((memory, index) => (
+            chronologicalMemories.map((memory) => (
               <motion.div
                 key={memory.id}
                 variants={itemVariants}

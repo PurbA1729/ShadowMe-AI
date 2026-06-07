@@ -1,18 +1,22 @@
 import type { Metadata } from "next";
+import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { MemoryProvider } from "@/context/MemoryContext";
 
-const geistSans = {
-  variable: "--font-geist-sans",
-};
+const plusJakartaSans = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  weight: ["300", "400", "500", "600", "700", "800"],
+});
 
-const geistMono = {
-  variable: "--font-geist-mono",
-};
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
+});
 
 export const metadata: Metadata = {
-  title: "ShadowMe AI - Memory Reconstruction Engine",
-  description: "An AI memory engine that remembers when you can't. Reconstruct memories and predict lost object locations.",
+  title: "Shadow - Personal Memory Index",
+  description: "A secure, local-first memory index that traces your environment to find what you misplace.",
 };
 
 export default function RootLayout({
@@ -23,7 +27,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${plusJakartaSans.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <MemoryProvider>

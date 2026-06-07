@@ -8,11 +8,9 @@ import {
   ArrowRight, 
   Brain, 
   Search, 
-  Network, 
   Cpu, 
   UploadCloud, 
-  CheckCircle,
-  TrendingUp
+  CheckCircle
 } from "lucide-react";
 import { useMemory } from "@/context/MemoryContext";
 
@@ -56,11 +54,11 @@ export const LandingView: React.FC = () => {
             <Brain className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h1 className="font-extrabold text-lg tracking-wider bg-gradient-to-r from-foreground to-slate-500 bg-clip-text text-transparent">
-              SHADOWME
+            <h1 className="font-extrabold text-lg tracking-wider bg-gradient-to-r from-foreground to-slate-400 bg-clip-text text-transparent">
+              SHADOW
             </h1>
             <span className="text-[10px] text-accent font-semibold tracking-widest uppercase block mt-[-2px]">
-              Memory Reconstruction
+              Local Memory Index
             </span>
           </div>
         </div>
@@ -84,7 +82,7 @@ export const LandingView: React.FC = () => {
             className="inline-flex items-center gap-2 self-center md:self-start bg-primary/10 border border-primary/20 rounded-full px-4 py-1.5 text-xs text-accent font-semibold tracking-wide"
           >
             <Sparkles className="w-3.5 h-3.5" />
-            AI-Powered Recall Engine
+            Local-First Location Estimation
           </motion.div>
 
           <motion.h2
@@ -93,17 +91,17 @@ export const LandingView: React.FC = () => {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="text-5xl md:text-7xl font-extrabold tracking-tight leading-none"
           >
-            Your Second <br />
-            <span className="text-gradient-accent">Brain.</span>
+            Never lose track <br />
+            of your <span className="text-gradient-accent">essentials.</span>
           </motion.h2>
 
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-slate-400 text-lg md:text-xl leading-relaxed max-w-lg mx-auto md:mx-0"
+            className="text-slate-400 text-lg md:text-xl leading-relaxed max-w-lg mx-auto md:mx-0 font-medium"
           >
-            ShadowMe reconstructs forgotten memories and predicts where your lost belongings are most likely located based on your digital traces.
+            Shadow runs secure local processing to map your text records, timeline items, and image vectors into an active search index to locate missing belongings.
           </motion.p>
 
           <motion.div
@@ -116,7 +114,7 @@ export const LandingView: React.FC = () => {
               onClick={() => setActiveTab("dashboard")}
               className="bg-primary hover:bg-primary/95 text-white font-bold px-8 py-4 rounded-2xl flex items-center justify-center gap-2.5 shadow-lg shadow-primary/25 hover:shadow-primary/35 transition-all hover:scale-[1.02] cursor-pointer"
             >
-              Start Remembering
+              Start Searching
               <ArrowRight className="w-5 h-5" />
             </button>
             <button
@@ -175,10 +173,10 @@ export const LandingView: React.FC = () => {
                         cy: [fromNode.y, toNode.y],
                       }}
                       transition={{
-                        duration: 3 + Math.random() * 2,
+                        duration: 3 + (idx % 3) * 0.7,
                         repeat: Infinity,
                         ease: "linear",
-                        delay: Math.random() * 2,
+                        delay: (idx % 5) * 0.4,
                       }}
                     />
                   </g>
@@ -217,30 +215,30 @@ export const LandingView: React.FC = () => {
       {/* Feature Cards Grid */}
       <section className="max-w-7xl mx-auto px-6 py-24 relative z-10 border-t border-white/5">
         <div className="text-center max-w-2xl mx-auto mb-16">
-          <h3 className="text-3xl md:text-4xl font-extrabold mb-4">Memory Reconstruction Framework</h3>
-          <p className="text-slate-400">Everything you need to secure, map, and query your life's traces.</p>
+          <h3 className="text-3xl md:text-4xl font-extrabold mb-4">Core Indexing Capabilities</h3>
+          <p className="text-slate-400 font-medium">Everything you need to sync, analyze, and inspect your records locally.</p>
         </div>
 
         <div className="grid md:grid-cols-4 gap-6">
           {[
             { 
-              title: "🧠 Memory Reconstruction", 
-              desc: "Relive forgotten moments with detail extraction and semantic search.", 
+              title: "🧠 Timeline Capture", 
+              desc: "Reconstruct your day chronologically by combining photos, receipts, and Notes entries.", 
               color: "text-primary" 
             },
             { 
-              title: "🔍 Lost Object Recovery", 
-              desc: "Find what you misplaced using spatial probabilistic forecasting.", 
+              title: "🔍 Smart Finder", 
+              desc: "Trace misplaced essentials by mapping visual anchors to 2D floor plans.", 
               color: "text-accent" 
             },
             { 
-              title: "📊 Memory Intelligence", 
-              desc: "Understand structural behavioral patterns and correlation indexes.", 
+              title: "📊 Local Analytics", 
+              desc: "Assess search accuracy metrics, item counts, and indexing confidence levels.", 
               color: "text-success" 
             },
             { 
-              title: "🕸 Memory Graph", 
-              desc: "Visualize connected places, objects, and people interactively.", 
+              title: "🕸 Connection Map", 
+              desc: "Inspect connected moments, objects, and locations visually on an interactive map.", 
               color: "text-warning" 
             }
           ].map((feat, idx) => (
@@ -262,8 +260,8 @@ export const LandingView: React.FC = () => {
       {/* How it Works Workflow Section */}
       <section className="max-w-7xl mx-auto px-6 py-24 border-t border-white/5 relative z-10">
         <div className="text-center max-w-2xl mx-auto mb-20">
-          <h3 className="text-3xl md:text-4xl font-extrabold mb-4">Neural Memory Loop</h3>
-          <p className="text-slate-400">How our AI reconstructions turn digital dust into spatial answers.</p>
+          <h3 className="text-3xl md:text-4xl font-extrabold mb-4">Local Data Pipeline</h3>
+          <p className="text-slate-400 font-medium">How Shadow converts local files, notes, and photos into verified search coordinates.</p>
         </div>
 
         <div className="grid md:grid-cols-4 gap-8 relative">
@@ -273,29 +271,29 @@ export const LandingView: React.FC = () => {
           {[
             {
               step: "Step 1",
-              title: "Upload Memories",
-              items: ["Photos", "Receipts", "Notes"],
+              title: "Import Files",
+              items: ["Photo uploads", "Scan receipts", "Apple Notes"],
               icon: UploadCloud,
               color: "border-primary"
             },
             {
               step: "Step 2",
-              title: "AI Processes",
-              items: ["OCR Scanning", "Object Detection", "Graph Mapping"],
+              title: "Local Parsing",
+              items: ["OCR scanning", "Object recognition", "Metadata analysis"],
               icon: Cpu,
               color: "border-accent"
             },
             {
               step: "Step 3",
-              title: "Memory Reconstruction",
-              items: ["Timeline Synthesis", "Activity Logs", "Glow Links"],
+              title: "Activity Indexing",
+              items: ["Timeline sync", "Tag grouping", "Connection mapping"],
               icon: Brain,
               color: "border-success"
             },
             {
               step: "Step 4",
-              title: "Lost Object Prediction",
-              items: ["Heatmap Highlights", "Confidence Indexes", "Reasoning Reports"],
+              title: "Location Mapping",
+              items: ["2D floor plan overlays", "Confidence analysis", "Detail reports"],
               icon: Search,
               color: "border-warning"
             }
@@ -346,7 +344,7 @@ export const LandingView: React.FC = () => {
               <Brain className="w-16 h-16 text-primary mb-4 animate-bounce" />
               <h4 className="text-xl font-bold text-foreground mb-2">ShadowMe Interactive Demonstration</h4>
               <p className="text-sm text-slate-400 max-w-md mb-6">
-                This interactive portal allows full traversal of the Memory Graph, Heatmaps, and AI Assistant. Tap "Start Remembering" to launch the environment.
+                This interactive portal allows full traversal of the Connection Map, Heatmaps, and AI Assistant. Tap &ldquo;Start Searching&rdquo; to launch the environment.
               </p>
               <button
                 onClick={() => {

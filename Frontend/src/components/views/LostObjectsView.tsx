@@ -1,20 +1,16 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Search, 
   MapPin, 
-  Percent, 
-  HelpCircle, 
-  ArrowRight, 
   Sparkles,
-  Home,
   CheckCircle,
   Clock,
   Compass
 } from "lucide-react";
-import { useMemory, LostObject, PredictedLocation } from "@/context/MemoryContext";
+import { useMemory, LostObject } from "@/context/MemoryContext";
 import confetti from "canvas-confetti";
 
 export const LostObjectsView: React.FC = () => {
@@ -22,19 +18,26 @@ export const LostObjectsView: React.FC = () => {
   
   // Local state for searching/displaying
   const [searchInput, setSearchInput] = useState("");
-  const [activeObject, setActiveObject] = useState<LostObject | null>(null);
-  const [selectedLocation, setSelectedLocation] = useState<PredictedLocation | null>(null);
-
-  // Default to the first lost object (usually Wallet)
-  useEffect(() => {
+  const [activeObjectId, setActiveObjectId] = useState<string | null>(() => {
     const defaultObj = lostObjects.find(o => o.status === "lost");
-    if (defaultObj) {
-      setActiveObject(defaultObj);
-      if (defaultObj.predictedLocations.length > 0) {
-        setSelectedLocation(defaultObj.predictedLocations[0]);
-      }
-    }
-  }, [lostObjects]);
+    return defaultObj ? defaultObj.id : (lostObjects[0]?.id || null);
+  });
+  const [customLostObject, setCustomLostObject] = useState<LostObject | null>(null);
+  const [selectedLocationName, setSelectedLocationName] = useState<string | null>(() => {
+    const defaultObj = lostObjects.find(o => o.status === "lost");
+    return (defaultObj && defaultObj.predictedLocations.length > 0) ? defaultObj.predictedLocations[0].name : null;
+  });
+
+  // Dynamically resolve activeObject and selectedLocation on render
+  const activeObject = activeObjectId === "temp"
+    ? customLostObject
+    : (lostObjects.find(o => o.id === activeObjectId) || null);
+
+  const selectedLocation = activeObject
+    ? (activeObject.predictedLocations.find(loc => loc.name === selectedLocationName) 
+       || activeObject.predictedLocations[0] 
+       || null)
+    : null;
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,9 +48,9 @@ export const LostObjectsView: React.FC = () => {
     );
 
     if (matched) {
-      setActiveObject(matched);
+      setActiveObjectId(matched.id);
       if (matched.predictedLocations.length > 0) {
-        setSelectedLocation(matched.predictedLocations[0]);
+        setSelectedLocationName(matched.predictedLocations[0].name);
       }
     } else {
       // Create a mock temporary search result if not matched
@@ -74,8 +77,9 @@ export const LostObjectsView: React.FC = () => {
           }
         ]
       };
-      setActiveObject(tempObj);
-      setSelectedLocation(tempObj.predictedLocations[0]);
+      setCustomLostObject(tempObj);
+      setActiveObjectId("temp");
+      setSelectedLocationName(tempObj.predictedLocations[0].name);
     }
   };
 
@@ -98,41 +102,17 @@ export const LostObjectsView: React.FC = () => {
     return "text-accent bg-accent/10 border-accent/20";
   };
 
-  const getHeatmapColorClass = (locationName: string) => {
-    if (!activeObject || activeObject.status === "recovered") return "bg-white/5 border-white/10";
-    
-    const locMatch = activeObject.predictedLocations.find(
-      loc => loc.name.toLowerCase().includes(locationName.toLowerCase())
-    );
 
-    if (!locMatch) return "bg-white/2 border-white/5 opacity-40";
-    
-    if (locMatch.probability >= 60) {
-      return "bg-danger/20 border-danger/40 shadow-[inset_0_0_15px_rgba(239,68,68,0.2)]";
-    }
-    if (locMatch.probability >= 20) {
-      return "bg-warning/20 border-warning/40 shadow-[inset_0_0_15px_rgba(245,158,11,0.2)]";
-    }
-    return "bg-accent/20 border-accent/40 shadow-[inset_0_0_15px_rgba(34,211,238,0.15)]";
-  };
-
-  const getHeatmapIntensityLabel = (locationName: string) => {
-    if (!activeObject || activeObject.status === "recovered") return "0%";
-    const locMatch = activeObject.predictedLocations.find(
-      loc => loc.name.toLowerCase().includes(locationName.toLowerCase())
-    );
-    return locMatch ? `${locMatch.probability}%` : "0%";
-  };
 
   return (
     <div className="space-y-8 max-w-6xl mx-auto p-4 md:p-6 text-foreground">
       {/* Header Title */}
       <div>
         <h2 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-foreground to-slate-500 bg-clip-text text-transparent">
-          Lost Object Finder
+          Find My Items
         </h2>
         <p className="text-slate-400 text-sm mt-1">
-          Predicting location probability using temporal tracking and visual overlays.
+          Estimate coordinates of missing items using recent photo scans and text activity notes.
         </p>
       </div>
 
@@ -144,37 +124,37 @@ export const LostObjectsView: React.FC = () => {
             type="text"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
-            placeholder="What did you lose? (e.g. Wallet, Keys...)"
-            className="w-full bg-white/5 border border-white/10 rounded-2xl py-3.5 pl-12 pr-4 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all placeholder-white/30"
+            placeholder="Search for a tracked item... (e.g. Wallet, Keys)"
+            className="w-full bg-white/5 border border-white/10 rounded-2xl py-3.5 pl-12 pr-4 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all placeholder-white/30 text-foreground"
           />
         </div>
         <button
           type="submit"
-          className="bg-primary hover:bg-primary/90 text-white text-sm font-bold px-6 py-3.5 rounded-2xl transition-all shadow-lg shadow-primary/20 cursor-pointer"
+          className="bg-primary hover:bg-primary/90 text-white text-sm font-semibold px-6 py-3.5 rounded-2xl transition-all shadow-md shadow-primary/25 cursor-pointer"
         >
-          Forecasting Location
+          Search Location
         </button>
       </form>
 
       {/* Suggested Quick Triggers */}
       <div className="flex flex-wrap items-center gap-2 text-xs">
-        <span className="text-slate-400">Index suggestions:</span>
+        <span className="text-slate-500">Tracked items:</span>
         {lostObjects.map((obj) => (
           <button
             key={obj.id}
             onClick={() => {
-              setActiveObject(obj);
+              setActiveObjectId(obj.id);
               if (obj.predictedLocations.length > 0) {
-                setSelectedLocation(obj.predictedLocations[0]);
+                setSelectedLocationName(obj.predictedLocations[0].name);
               }
             }}
             className={`px-3 py-1 rounded-full border cursor-pointer transition-all ${
-              activeObject?.id === obj.id
+              activeObjectId === obj.id
                 ? "bg-accent/15 text-accent border-accent/30"
                 : "bg-white/5 text-slate-400 border-white/5 hover:text-white"
             }`}
           >
-            {obj.name} ({obj.status})
+            {obj.name} ({obj.status === "lost" ? "missing" : "found"})
           </button>
         ))}
       </div>
@@ -218,7 +198,7 @@ export const LostObjectsView: React.FC = () => {
                     return (
                       <div
                         key={index}
-                        onClick={() => setSelectedLocation(loc)}
+                        onClick={() => setSelectedLocationName(loc.name)}
                         className={`p-4 rounded-2xl border text-left cursor-pointer transition-all ${
                           isSelected
                             ? "border-accent bg-accent/5"
@@ -265,63 +245,200 @@ export const LostObjectsView: React.FC = () => {
           {/* Right Column: House Heatmap visualization */}
           <div className="lg:col-span-7 space-y-6">
             <div className="glass-panel rounded-3xl p-5 border border-white/5 space-y-4">
-              <h3 className="text-sm font-bold text-foreground uppercase tracking-wider pb-2 border-b border-white/5">
-                Diagnostic House Heatmap
-              </h3>
+              <div className="flex justify-between items-center pb-2 border-b border-white/5">
+                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">
+                  Live Search Heatmap
+                </h3>
+                <span className="text-[10px] bg-white/5 border border-white/5 px-2 py-0.5 rounded text-slate-400 font-mono">
+                  {activeObject.name === "Laptop" ? "Location: Office HQ" : "Location: Home Apartment"}
+                </span>
+              </div>
 
-              {/* Heatmap Grid Drawing */}
-              <div className="grid grid-cols-2 gap-4 h-[280px]">
-                {[
-                  { name: "Bedroom", desc: "Common night drop-off" },
-                  { name: "Kitchen", desc: "Counters & island bench" },
-                  { name: "Living Room", desc: "Sofas & sideboard shelves" },
-                  { name: "Study Room", desc: "Workspace charging stations" }
-                ].map((room) => {
-                  const probVal = getHeatmapIntensityLabel(room.name);
-                  const isHigh = parseInt(probVal) >= 60;
-                  return (
-                    <div
-                      key={room.name}
-                      onClick={() => {
-                        const matchedLoc = activeObject.predictedLocations.find(
-                          l => l.name.toLowerCase().includes(room.name.toLowerCase())
-                        );
-                        if (matchedLoc) {
-                          setSelectedLocation(matchedLoc);
-                        }
-                      }}
-                      className={`rounded-2xl border p-4 flex flex-col justify-between transition-all cursor-pointer relative overflow-hidden group ${getHeatmapColorClass(room.name)}`}
-                    >
-                      {/* Pulse Overlay if high probability */}
-                      {isHigh && activeObject.status === "lost" && (
-                        <div className="absolute inset-0 bg-danger/5 animate-pulse pointer-events-none" />
-                      )}
+              {/* Interactive Floor Plan Map */}
+              <div className="w-full flex items-center justify-center p-2 rounded-2xl bg-black/20 border border-white/5 relative overflow-hidden h-[280px]">
+                {activeObject.status === "lost" ? (
+                  (() => {
+                    // Decide if showing Office or Home layout
+                    const isOffice = activeObject.name === "Laptop";
 
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h4 className="font-bold text-sm text-foreground group-hover:text-primary transition-colors">
-                            {room.name}
-                          </h4>
-                          <span className="text-[10px] text-slate-400">{room.desc}</span>
-                        </div>
-                        <span className="text-xs font-mono font-bold text-foreground bg-black/5 dark:bg-black/40 border border-card-border px-2 py-0.5 rounded">
-                          {probVal}
-                        </span>
-                      </div>
+                    // Defined rooms configuration
+                    const homeRooms = [
+                      { id: "study", name: "Study Room", x: 20, y: 20, w: 160, h: 100, cx: 100, cy: 70 },
+                      { id: "bedroom", name: "Bedroom", x: 190, y: 20, w: 190, h: 100, cx: 285, cy: 70 },
+                      { id: "living", name: "Living Room", x: 20, y: 130, w: 220, h: 130, cx: 130, cy: 195 },
+                      { id: "kitchen", name: "Kitchen", x: 250, y: 130, w: 130, h: 130, cx: 315, cy: 195 }
+                    ];
 
-                      <div className="flex items-center gap-1 text-[10px] text-slate-400 mt-6 self-start group-hover:translate-x-0.5 transition-transform">
-                        Verify Diagnostics <ArrowRight className="w-3 h-3 text-accent" />
-                      </div>
-                    </div>
-                  );
-                })}
+                    const officeRooms = [
+                      { id: "meetingA", name: "Meeting Room A", x: 20, y: 20, w: 170, h: 100, cx: 105, cy: 70 },
+                      { id: "meetingB", name: "Meeting Room B", x: 200, y: 20, w: 180, h: 100, cx: 290, cy: 70 },
+                      { id: "openSpace", name: "Open Workspace", x: 20, y: 130, w: 240, h: 130, cx: 140, cy: 195 },
+                      { id: "lounge", name: "Kitchen / Lounge", x: 270, y: 130, w: 110, h: 130, cx: 325, cy: 195 }
+                    ];
+
+                    const rooms = isOffice ? officeRooms : homeRooms;
+
+                    // Map room names to predictions to compute probability
+                    const searchTerms: Record<string, string[]> = {
+                      "Study Room": ["study", "desk", "workspace"],
+                      "Bedroom": ["bedroom"],
+                      "Living Room": ["living", "sofa", "entryway", "hallway", "console"],
+                      "Kitchen": ["kitchen", "dining"],
+                      "Meeting Room B": ["room b", "whiteboard"],
+                      "Meeting Room A": ["room a"],
+                      "Open Workspace": ["open desk", "workspace", "desk"],
+                      "Kitchen / Lounge": ["kitchen", "lounge"]
+                    };
+
+                    const getProbability = (roomName: string) => {
+                      const terms = searchTerms[roomName] || [];
+                      const match = activeObject.predictedLocations.find(loc => 
+                        terms.some(t => loc.name.toLowerCase().includes(t))
+                      );
+                      return match ? match.probability : 0;
+                    };
+
+                    // Find room with highest probability for beacon placement
+                    let highestRoom = rooms[0];
+                    let highestProb = 0;
+                    rooms.forEach(room => {
+                      const p = getProbability(room.name);
+                      if (p > highestProb) {
+                        highestProb = p;
+                        highestRoom = room;
+                      }
+                    });
+
+                    const handleRoomClick = (roomName: string) => {
+                      const terms = searchTerms[roomName] || [];
+                      const match = activeObject.predictedLocations.find(loc => 
+                        terms.some(t => loc.name.toLowerCase().includes(t))
+                      );
+                      if (match) {
+                        setSelectedLocationName(match.name);
+                      }
+                    };
+
+                    return (
+                      <svg viewBox="0 0 400 280" className="w-full h-full max-w-[420px]">
+                        <defs>
+                          {/* Radial Glow Gradients for high/medium/low probability rooms */}
+                          <radialGradient id="highProbGlow" cx="50%" cy="50%" r="50%">
+                            <stop offset="0%" stopColor="#EF4444" stopOpacity="0.45" />
+                            <stop offset="100%" stopColor="#EF4444" stopOpacity="0.02" />
+                          </radialGradient>
+                          <radialGradient id="midProbGlow" cx="50%" cy="50%" r="50%">
+                            <stop offset="0%" stopColor="#F59E0B" stopOpacity="0.3" />
+                            <stop offset="100%" stopColor="#F59E0B" stopOpacity="0.02" />
+                          </radialGradient>
+                          <radialGradient id="lowProbGlow" cx="50%" cy="50%" r="50%">
+                            <stop offset="0%" stopColor="#97CEFF" stopOpacity="0.2" />
+                            <stop offset="100%" stopColor="#97CEFF" stopOpacity="0.01" />
+                          </radialGradient>
+                        </defs>
+
+                        {/* Rooms Layout */}
+                        {rooms.map((room) => {
+                          const prob = getProbability(room.name);
+                          const isSelected = selectedLocation?.name && searchTerms[room.name]?.some(t => 
+                            selectedLocation.name.toLowerCase().includes(t)
+                          );
+
+                          // Determine overlay color
+                          let glowId = "";
+                          let fillStroke = "rgba(255, 255, 255, 0.08)";
+                          if (prob >= 60) {
+                            glowId = "url(#highProbGlow)";
+                            fillStroke = "rgba(239, 68, 68, 0.5)";
+                          } else if (prob >= 20) {
+                            glowId = "url(#midProbGlow)";
+                            fillStroke = "rgba(245, 158, 11, 0.4)";
+                          } else if (prob > 0) {
+                            glowId = "url(#lowProbGlow)";
+                            fillStroke = "rgba(151, 206, 255, 0.3)";
+                          }
+
+                          return (
+                            <g 
+                              key={room.id} 
+                              onClick={() => handleRoomClick(room.name)}
+                              className="cursor-pointer group"
+                            >
+                              {/* Background room overlay fill */}
+                              <rect
+                                x={room.x}
+                                y={room.y}
+                                width={room.w}
+                                height={room.h}
+                                className="floor-room fill-white/2"
+                                rx="12"
+                                style={{
+                                  stroke: isSelected ? "var(--primary)" : fillStroke,
+                                  strokeWidth: isSelected ? "2.5px" : "1.2px"
+                                }}
+                              />
+                              {/* Glow element */}
+                              {glowId && (
+                                <rect
+                                  x={room.x + 2}
+                                  y={room.y + 2}
+                                  width={room.w - 4}
+                                  height={room.h - 4}
+                                  fill={glowId}
+                                  rx="10"
+                                  pointerEvents="none"
+                                />
+                              )}
+                              
+                              {/* Room Name label */}
+                              <text
+                                x={room.cx}
+                                y={room.cy}
+                                textAnchor="middle"
+                                className="text-[10px] font-bold fill-slate-300 pointer-events-none tracking-wide"
+                              >
+                                {room.name}
+                              </text>
+                              {/* Room Probability label */}
+                              <text
+                                x={room.cx}
+                                y={room.cy + 14}
+                                textAnchor="middle"
+                                className={`text-[9px] font-mono font-bold pointer-events-none ${
+                                  prob >= 60 ? "fill-danger" : prob >= 20 ? "fill-warning" : "fill-slate-400"
+                                }`}
+                              >
+                                {prob}%
+                              </text>
+                            </g>
+                          );
+                        })}
+
+                        {/* Pulsing Locator Beacon (placed on highest probability room) */}
+                        {highestProb > 0 && (
+                          <g transform={`translate(${highestRoom.cx}, ${highestRoom.cy - 22})`} pointerEvents="none">
+                            {/* Inner circle */}
+                            <circle r="5" fill="#EF4444" />
+                            {/* Outer pulsing ring */}
+                            <circle r="12" fill="none" stroke="#EF4444" strokeWidth="1.5" className="beacon-pulse" />
+                            <circle r="22" fill="none" stroke="#EF4444" strokeWidth="1" className="beacon-pulse animate-delay-[300ms]" style={{ opacity: 0.5 }} />
+                          </g>
+                        )}
+                      </svg>
+                    );
+                  })()
+                ) : (
+                  <div className="text-slate-500 text-xs text-center font-medium">
+                    ✨ Floor plan inactive. Item has been recovered.
+                  </div>
+                )}
               </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* Explainability Panel (Updated based on selected location) */}
+      {/* Location Analysis Panel */}
       <AnimatePresence mode="wait">
         {selectedLocation && activeObject && activeObject.status === "lost" && (
           <motion.div
@@ -329,20 +446,20 @@ export const LostObjectsView: React.FC = () => {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 15 }}
-            className="glass-panel-glow rounded-3xl p-6 border border-white/5 space-y-4 relative overflow-hidden"
+            className="glass-panel rounded-3xl p-6 border border-white/5 space-y-4 relative overflow-hidden"
           >
-            <div className="absolute top-[-30px] left-[-30px] w-24 h-24 rounded-full bg-primary/5 blur-2xl" />
+            <div className="absolute top-[-30px] left-[-30px] w-24 h-24 rounded-full bg-primary/5 blur-2xl pointer-events-none" />
             
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-white/5">
               <div className="flex items-center gap-2">
                 <Sparkles className="w-5 h-5 text-accent animate-pulse" />
                 <h3 className="font-bold text-base text-foreground">
-                  Explainability Report: {selectedLocation.name}
+                  Location Analysis Report: {selectedLocation.name}
                 </h3>
               </div>
 
               <div className="flex items-center gap-2 text-xs">
-                <span className="text-slate-400">Location confidence:</span>
+                <span className="text-slate-400 font-semibold">Location confidence:</span>
                 <span className="text-accent font-mono font-extrabold text-sm">
                   {selectedLocation.probability}%
                 </span>
@@ -352,13 +469,13 @@ export const LostObjectsView: React.FC = () => {
             <div className="grid md:grid-cols-12 gap-6 items-start">
               {/* Reasoning Checkmarks */}
               <div className="md:col-span-8 space-y-3.5">
-                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest">
-                  AI Reasonings & Observations
+                <h4 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                  Timeline Evidence & Context
                 </h4>
                 
                 <div className="space-y-2.5">
                   {selectedLocation.reasoning.map((reason, rIdx) => (
-                    <div key={rIdx} className="flex gap-2.5 items-start text-xs text-slate-200 leading-relaxed">
+                    <div key={rIdx} className="flex gap-2.5 items-start text-xs text-slate-200 leading-relaxed font-medium">
                       <CheckCircle className="w-4 h-4 text-success flex-shrink-0 mt-0.5" />
                       <span>{reason}</span>
                     </div>
@@ -367,14 +484,14 @@ export const LostObjectsView: React.FC = () => {
               </div>
 
               {/* Memory context log */}
-              <div className="md:col-span-4 p-4 rounded-2xl bg-white/2 border border-white/5 space-y-3">
-                <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1">
+              <div className="md:col-span-4 p-4 rounded-2xl bg-white/3 border border-white/5 space-y-3">
+                <h4 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1">
                   <Clock className="w-3.5 h-3.5 text-slate-400" />
-                  Spatial Reference Trace
+                  Recent References
                 </h4>
                 
-                <p className="text-[11px] text-slate-300 leading-relaxed">
-                  "OCR scans detect {activeObject.name.toLowerCase()} correlations in photo traces near {selectedLocation.name}. System suggests searching near shelves."
+                <p className="text-[11px] text-slate-300 leading-relaxed font-medium">
+                  Text matching shows recent activity records related to {activeObject.name.toLowerCase()} near {selectedLocation.name}. Index suggests looking nearby.
                 </p>
               </div>
             </div>

@@ -3,14 +3,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
-  Send, 
-  Sparkles, 
   Brain, 
   Compass, 
-  Clock, 
-  MapPin, 
-  CornerDownLeft, 
-  Search,
   MessageSquare,
   Paperclip,
   ArrowUp,
@@ -18,10 +12,10 @@ import {
   Image as ImageIcon,
   StickyNote
 } from "lucide-react";
-import { useMemory, ChatMessage, Memory } from "@/context/MemoryContext";
+import { useMemory, Memory } from "@/context/MemoryContext";
 
 export const ChatView: React.FC = () => {
-  const { chatHistory, sendChatMessage, memories } = useMemory();
+  const { chatHistory, sendChatMessage } = useMemory();
   const [inputText, setInputText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   
@@ -39,11 +33,18 @@ export const ChatView: React.FC = () => {
   // Handle typing simulation
   useEffect(() => {
     if (chatHistory.length > 0 && chatHistory[chatHistory.length - 1].sender === "user") {
-      setIsTyping(true);
+      const typingTimer = setTimeout(() => {
+        setIsTyping(true);
+      }, 0);
+      
       const timer = setTimeout(() => {
         setIsTyping(false);
       }, 1200);
-      return () => clearTimeout(timer);
+      
+      return () => {
+        clearTimeout(typingTimer);
+        clearTimeout(timer);
+      };
     }
   }, [chatHistory]);
 
@@ -51,7 +52,6 @@ export const ChatView: React.FC = () => {
     e.preventDefault();
     if (!inputText.trim() || isTyping) return;
     sendChatMessage(inputText);
-    setInputText(inputText); // Save query context
     setInputText("");
   };
 
@@ -81,10 +81,10 @@ export const ChatView: React.FC = () => {
       {/* Title */}
       <div className="flex-shrink-0">
         <h2 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-foreground to-slate-500 bg-clip-text text-transparent">
-          AI Memory Assistant
+          Shadow Assistant
         </h2>
         <p className="text-slate-400 text-sm mt-1">
-          Perplexity-style cognitive queries across your digital traces and location history.
+          Search your timeline records, documents, and locations in plain English.
         </p>
       </div>
 
@@ -117,7 +117,7 @@ export const ChatView: React.FC = () => {
               <div className="flex-1 space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                    {isAI ? "ShadowMe Engine" : "You"}
+                    {isAI ? "Shadow Assistant" : "You"}
                   </span>
                   <span className="text-[10px] text-slate-500 font-mono">{message.timestamp}</span>
                 </div>
@@ -129,9 +129,9 @@ export const ChatView: React.FC = () => {
                 {/* Sources references cited */}
                 {isAI && message.sources && message.sources.length > 0 && (
                   <div className="space-y-2 pt-2 border-t border-white/5">
-                    <h4 className="text-[9px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1">
+                    <h4 className="text-[9px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1">
                       <Compass className="w-3.5 h-3.5 text-accent" />
-                      Sources Cited ({message.sources.length})
+                      Sources ({message.sources.length})
                     </h4>
                     
                     <div className="flex flex-wrap gap-2">

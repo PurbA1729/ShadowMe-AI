@@ -75,12 +75,12 @@ const INITIAL_MEMORIES: Memory[] = [
     id: "mem-1",
     type: "photo",
     title: "Office Meeting Whiteboard",
-    content: "Whiteboard notes showing Q3 roadmap targets, API schema diagrams, and project distribution plan. Main timeline items include 'Launch v2.0 in July' and 'Beta release mid-June'. Left laptop on the desk nearby.",
+    content: "Brainstorming notes from the Q3 architecture session. Diagrams layout database schema revisions, serverless API design, and task scheduling queues. Left my laptop on the main desk under the whiteboard in Room B.",
     timestamp: "2026-06-07T14:30:00Z",
     displayDate: "June 7, 2026",
     displayTime: "02:30 PM",
     location: "Office - Meeting Room B",
-    tags: ["Work", "Roadmap", "Laptop", "Whiteboard"],
+    tags: ["Work", "Design", "Laptop", "Whiteboard"],
     confidence: 96,
     imageUrl: "/mock-whiteboard.jpg",
   },
@@ -88,12 +88,12 @@ const INITIAL_MEMORIES: Memory[] = [
     id: "mem-2",
     type: "receipt",
     title: "Blue Bottle Coffee Receipt",
-    content: "1x Double Espresso, 1x Avocado Toast. Paid $14.50 with Visa ending in 4242. Keys placed on the counter near the espresso machine while waiting.",
+    content: "1x Espresso Macchiato, 1x Avocado Toast. Paid $14.50 using Visa debit (ending *4242). Transactions time: 10:14 AM. Held keys in hand while checking out, then set them on the wooden service counter next to the pickup tray.",
     timestamp: "2026-06-07T10:15:00Z",
     displayDate: "June 7, 2026",
     displayTime: "10:15 AM",
     location: "Coffee Shop - Blue Bottle",
-    tags: ["Personal", "Finance", "Keys", "Coffee"],
+    tags: ["Personal", "Receipt", "Keys", "Coffee"],
     confidence: 89,
     imageUrl: "/mock-coffee.jpg",
   },
@@ -101,7 +101,7 @@ const INITIAL_MEMORIES: Memory[] = [
     id: "mem-3",
     type: "note",
     title: "Weekly Planning Draft",
-    content: "Self-reminder notes: Clean study table tonight. Put wallet in the black backpack front pocket before heading out tomorrow. Pick up keys from the entryway console.",
+    content: "Note from Apple Notes: Need to organize the study desk tonight. Remember to transfer wallet from the hall table shelf to the black backpack front pocket before leaving tomorrow morning. Pick up house keys from the entryway tray.",
     timestamp: "2026-06-07T09:00:00Z",
     displayDate: "June 7, 2026",
     displayTime: "09:00 AM",
@@ -113,25 +113,25 @@ const INITIAL_MEMORIES: Memory[] = [
     id: "mem-4",
     type: "photo",
     title: "Living Room Sofa Table Setup",
-    content: "Visual snapshot of the coffee table. Mug of tea, current book, and TV remote present. Wallet is resting on the side shelf of the console table in the entryway background.",
+    content: "Photo analysis: View of the coffee table with tea mug, book, and TV remote. The wallet is lying flat on the lower shelf of the dark wood entryway console table visible in the background.",
     timestamp: "2026-06-06T18:15:00Z",
     displayDate: "June 6, 2026",
     displayTime: "06:15 PM",
     location: "Home - Living Room",
-    tags: ["Home", "Wallet", "Tea"],
+    tags: ["Home", "Wallet", "Living-Room"],
     confidence: 94,
     imageUrl: "/mock-living-room.jpg",
   },
   {
     id: "mem-5",
     type: "document",
-    title: "Grocery Shopping List & Receipt",
-    content: "Grocery shopping completed. Bought apples, milk, cereal, detergent, organic honey. Total paid: $48.20. Backpack was left on the kitchen island bench.",
+    title: "Grocery Shopping Receipt",
+    content: "Receipt from Whole Foods Market. Bought fresh apples, almond milk, organic oats, cereal, laundry detergent. Paid $48.20. Set the grocery bags on the kitchen counter and left my black backpack resting on the kitchen stool.",
     timestamp: "2026-06-06T12:00:00Z",
     displayDate: "June 6, 2026",
     displayTime: "12:00 PM",
     location: "Home - Kitchen",
-    tags: ["Shopping", "Food", "Backpack"],
+    tags: ["Receipt", "Food", "Backpack"],
     confidence: 98,
     imageUrl: "/mock-kitchen.jpg",
   }
@@ -142,30 +142,30 @@ const INITIAL_LOST_OBJECTS: LostObject[] = [
     id: "obj-1",
     name: "Wallet",
     status: "lost",
-    lastSeen: "June 6, 2026 (Living Room Sofa Table Photo)",
+    lastSeen: "June 6, 2026 (Living Room Console Photo)",
     predictedLocations: [
       {
         name: "Study Table",
         probability: 74,
         reasoning: [
-          "Wallet was detected on the living room shelf yesterday, but notes at 09:00 AM state you planned to put it in the black backpack.",
-          "High behavioral correlation: Wallet is usually moved to the Study Table when charging the phone next to the computer.",
-          "Text logs indicate you cleaned your study table later in the evening."
+          "The last verified visual trace shows the wallet on the entryway console shelf yesterday evening.",
+          "Notes from this morning indicate you planned to pack it in your black backpack, but the backpack was left in the kitchen.",
+          "You spent late evening working at your study table where you typically place your daily carry items next to your charging station."
         ]
       },
       {
         name: "Backpack",
         probability: 18,
         reasoning: [
-          "Your planning notes mentioned moving the wallet to the black backpack front pocket.",
-          "No photos confirm if it was successfully transferred."
+          "Apple Notes draft suggested moving the wallet to the backpack front pocket before heading out.",
+          "Visual analysis of the backpack in the kitchen indicates the front compartment remains unverified."
         ]
       },
       {
         name: "Kitchen",
         probability: 8,
         reasoning: [
-          "You unpacked groceries on the kitchen island at 12:00 PM, which is a secondary drop point for daily carry items."
+          "You unpacked groceries on the kitchen island at 12:00 PM, which is a common temporary drop point for pocket items."
         ]
       }
     ]
@@ -174,28 +174,28 @@ const INITIAL_LOST_OBJECTS: LostObject[] = [
     id: "obj-2",
     name: "Keys",
     status: "lost",
-    lastSeen: "June 7, 2026 (Coffee Shop Receipt)",
+    lastSeen: "June 7, 2026 (Blue Bottle Receipt)",
     predictedLocations: [
       {
         name: "Kitchen",
         probability: 68,
         reasoning: [
-          "Receipt from Blue Bottle Coffee shows keys were on the counter, but you returned home afterwards.",
-          "Kitchen island is the nearest counter when entering from the garage with groceries."
+          "Receipt details show keys were on the counter at Blue Bottle Coffee at 10:14 AM.",
+          "The kitchen island is the closest surface when entering the house from the garage with groceries."
         ]
       },
       {
         name: "Bedroom",
         probability: 22,
         reasoning: [
-          "Keys are often kept in your jeans pocket, which were placed in the laundry basket in the bedroom."
+          "Keys are frequently kept in your jeans pocket, which was placed in the laundry basket in the bedroom."
         ]
       },
       {
         name: "Living Room",
         probability: 10,
         reasoning: [
-          "Resting near the TV console where you sat after coffee."
+          "You sat on the living room sofa shortly after returning, meaning they could have slipped onto the sofa cushions."
         ]
       }
     ]
@@ -210,7 +210,7 @@ const INITIAL_LOST_OBJECTS: LostObject[] = [
         name: "Office - Meeting Room B",
         probability: 95,
         reasoning: [
-          "Clearly visible in the background of the whiteboard photo uploaded at 02:30 PM today."
+          "Clearly visible on the desk in the background of the whiteboard photo uploaded at 02:30 PM today."
         ]
       }
     ]
@@ -221,8 +221,8 @@ const INITIAL_CHAT: ChatMessage[] = [
   {
     id: "chat-1",
     sender: "assistant",
-    text: "Hello, I am **ShadowMe**. I've reconstructed your memory graph from 5 uploaded traces. Ask me anything about where things are, what you did, or receipts you've scanned.",
-    timestamp: "19:45 PM"
+    text: "Hi John. I've indexed your recent photos, receipts, and notes to map your items and locations. What can I help you find today?",
+    timestamp: "07:45 PM"
   }
 ];
 
@@ -259,7 +259,6 @@ export const MemoryProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
     // If memory content mentions certain objects, update or add to lost objects
     const contentLower = newMem.content.toLowerCase();
-    const titleLower = newMem.title.toLowerCase();
     
     // Check if new object is lost/mentioned
     if (contentLower.includes("lost") || contentLower.includes("where is") || contentLower.includes("misplaced")) {
@@ -332,22 +331,22 @@ export const MemoryProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     
     if (fileType === "photo") {
       title = `Snapshot: ${fileName.replace(/\.[^/.]+$/, "")}`;
-      content = "Visual analysis of the image reveals a black leather wallet sitting on the entryway table next to a stack of letters. A coffee mug is visible on the right.";
-      tags = ["Photo", "Wallet", "Entryway"];
+      content = "Visual analysis of the entryway console shows your brown leather wallet resting next to a stack of letters on the lower shelf. A coffee mug is visible on the right.";
+      tags = ["Photo", "Wallet", "Console"];
       location = "Home - Entryway";
     } else if (fileType === "receipt") {
       title = `Receipt: ${fileName.replace(/\.[^/.]+$/, "")}`;
-      content = "Transaction record. Starbucks Coffee. 1x Cafe Latte, 1x Blueberry Scone. Total: $9.85. Payment: Mastercard. Backpack was seen resting on the chair next to the window.";
+      content = "Receipt from Starbucks (4th St). 1x Cafe Latte, 1x Blueberry Scone. Total: $9.85. Paid with Mastercard (*5512). Set backpack down on the window chair while waiting.";
       tags = ["Receipt", "Finance", "Backpack", "Coffee"];
       location = "Coffee Shop - Starbucks";
     } else if (fileType === "note") {
       title = `Note: ${fileName.replace(/\.[^/.]+$/, "")}`;
-      content = "Text memo: 'Remember to leave the charger on the study table. Keys are in the jacket hanging in the hallway wardrobe.'";
+      content = "Memo from Apple Notes: Need to leave the charger on the study desk. Remember keys are in the pocket of the grey jacket hanging in the hallway wardrobe.";
       tags = ["Note", "Keys", "Jacket"];
       location = "Home - Hallway";
     } else {
       title = `Document: ${fileName.replace(/\.[^/.]+$/, "")}`;
-      content = "Scanned lease document summary. Details address 742 Evergreen Terrace. Signed yesterday. Left document folder in the office cabinet drawer.";
+      content = "Scanned lease agreement summary. Address: 742 Evergreen Terrace. Signed on June 5. File folder stowed inside the office cabinet second drawer.";
       tags = ["Document", "Office", "Paperwork"];
       location = "Office - Study Room";
     }

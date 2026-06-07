@@ -1,18 +1,23 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { 
   ZoomIn, 
   ZoomOut, 
   RefreshCcw, 
   MousePointer, 
-  HelpCircle,
   Sparkles,
-  MapPin,
-  Calendar,
   Layers,
-  Info
+  Info,
+  Home,
+  Wallet,
+  Key,
+  Coffee,
+  Briefcase,
+  Laptop,
+  Image as ImageIcon,
+  FileText
 } from "lucide-react";
 import { useMemory } from "@/context/MemoryContext";
 
@@ -42,15 +47,37 @@ export const GraphView: React.FC = () => {
   const dragStart = useRef({ x: 0, y: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // Helper to render node vector icons
+  const getNodeIcon = (nodeId: string, className = "w-4 h-4") => {
+    switch (nodeId) {
+      case "home":
+        return <Home className={`${className} text-primary`} />;
+      case "wallet":
+        return <Wallet className={`${className} text-accent`} />;
+      case "keys":
+        return <Key className={`${className} text-success`} />;
+      case "coffee":
+        return <Coffee className={`${className} text-warning`} />;
+      case "office":
+        return <Briefcase className={`${className} text-primary`} />;
+      case "laptop":
+        return <Laptop className={`${className} text-accent`} />;
+      case "whiteboard":
+        return <ImageIcon className={`${className} text-slate-400`} />;
+      default:
+        return <FileText className={`${className} text-slate-300`} />;
+    }
+  };
+
   // Nodes definition
   const nodes: Node[] = [
-    { id: "home", label: "Home", x: 300, y: 220, icon: "🏠", type: "place", details: "Primary anchor zone. Encompasses kitchen, bedroom, study, and living room shelf traces." },
-    { id: "wallet", label: "Wallet", x: 120, y: 150, icon: "💳", type: "object", details: "Item status: LOST. Last seen in living room sofa photo. Predicted on study table (74% confidence)." },
-    { id: "keys", label: "Keys", x: 160, y: 350, icon: "🔑", type: "object", details: "Item status: LOST. Last seen on coffee shop receipt. Predicted in kitchen island zone (68% confidence)." },
-    { id: "coffee", label: "Coffee Shop", x: 480, y: 320, icon: "☕", type: "place", details: "Trace anchor. Site of Blue Bottle purchase receipt ($14.50) on June 7." },
-    { id: "office", label: "Office", x: 550, y: 140, icon: "💼", type: "place", details: "Work anchor zone. Site of meeting whiteboard photo uploaded today at 02:30 PM." },
-    { id: "laptop", label: "Laptop", x: 360, y: 380, icon: "💻", type: "object", details: "Item status: RECOVERED. Traced on the desk near the meeting whiteboard in office room B." },
-    { id: "whiteboard", label: "Whiteboard", x: 500, y: 230, icon: "📸", type: "trace", details: "Memory trace ID: mem-1. Details roadmap, schema diagrams, and project distribution plan." },
+    { id: "home", label: "Home", x: 300, y: 220, icon: "🏠", type: "place", details: "Your primary residence. Maps activities across the kitchen, study table, and living room console table." },
+    { id: "wallet", label: "Wallet", x: 120, y: 150, icon: "💳", type: "object", details: "Brown leather wallet (status: MISSING). Last verified photo trace shows it on the entryway console shelf. Estimated to be on your study table." },
+    { id: "keys", label: "Keys", x: 160, y: 350, icon: "🔑", type: "object", details: "House keyring (status: MISSING). Last traced to Blue Bottle Coffee at 10:14 AM. Estimated to be in the kitchen." },
+    { id: "coffee", label: "Coffee Shop", x: 480, y: 320, icon: "☕", type: "place", details: "Blue Bottle Coffee on Market St. Visited yesterday morning to pick up an espresso and toast." },
+    { id: "office", label: "Office", x: 550, y: 140, icon: "💼", type: "place", details: "Corporate office location. Synced with Room B whiteboard brainstorming notes uploaded today." },
+    { id: "laptop", label: "Laptop", x: 360, y: 380, icon: "💻", type: "object", details: "Work laptop (status: LOCATED). Visually verified under the whiteboard on the desk in meeting Room B." },
+    { id: "whiteboard", label: "Whiteboard", x: 500, y: 230, icon: "📸", type: "trace", details: "Photo trace (mem-1). Brainstorming notes showing database layout plans and meeting notes." },
   ];
 
   // Links definition
@@ -139,10 +166,10 @@ export const GraphView: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 flex-shrink-0">
         <div>
           <h2 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-foreground to-slate-500 bg-clip-text text-transparent">
-            Neural Memory Graph
+            Connection Map
           </h2>
           <p className="text-slate-400 text-sm mt-1">
-            Visualizing semantic associations, overlap anchors, and temporal links.
+            A visual map of semantic connections between your places, items, and records.
           </p>
         </div>
       </div>
@@ -249,10 +276,10 @@ export const GraphView: React.FC = () => {
                             cy: [fromNode.y, toNode.y]
                           }}
                           transition={{
-                            duration: 4 + Math.random() * 2,
+                            duration: 4 + (idx % 3) * 0.7,
                             repeat: Infinity,
                             ease: "linear",
-                            delay: Math.random() * 2
+                            delay: (idx % 5) * 0.4
                           }}
                         />
                       )}
@@ -294,14 +321,17 @@ export const GraphView: React.FC = () => {
                         className="fill-white/5 hover:fill-white/8 transition-colors"
                       />
                       {/* Icon */}
-                      <text
-                        x={node.x}
-                        y={node.y + 6}
-                        textAnchor="middle"
-                        className="text-lg select-none"
+                      <foreignObject
+                        x={node.x - 9}
+                        y={node.y - 9}
+                        width="18"
+                        height="18"
+                        className="pointer-events-none"
                       >
-                        {node.icon}
-                      </text>
+                        <div className="flex items-center justify-center w-full h-full text-foreground group-hover:scale-110 transition-transform">
+                          {getNodeIcon(node.id, "w-4.5 h-4.5")}
+                        </div>
+                      </foreignObject>
                       {/* Label Text */}
                       <text
                         x={node.x}
@@ -327,7 +357,9 @@ export const GraphView: React.FC = () => {
             <div className="glass-panel rounded-3xl p-5 border border-white/5 space-y-6 h-full flex flex-col justify-between">
               <div className="space-y-4">
                 <div className="flex items-center gap-3 pb-3 border-b border-white/5">
-                  <span className="text-2xl">{getSelectedNodeDetails()?.icon}</span>
+                  <div className="p-2 rounded-xl bg-white/3 border border-white/5">
+                    {getNodeIcon(selectedNode, "w-6 h-6")}
+                  </div>
                   <div>
                     <h3 className="font-bold text-base text-foreground">
                       {getSelectedNodeDetails()?.label}
@@ -339,34 +371,34 @@ export const GraphView: React.FC = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1">
+                  <h4 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1">
                     <Info className="w-3.5 h-3.5" />
-                    Node Diagnostic
+                    Details
                   </h4>
-                  <p className="text-xs text-slate-300 leading-relaxed">
+                  <p className="text-xs text-slate-300 leading-relaxed font-medium">
                     {getSelectedNodeDetails()?.details}
                   </p>
                 </div>
 
                 {/* List Associated Memories */}
                 <div className="space-y-2.5">
-                  <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1">
+                  <h4 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1">
                     <Layers className="w-3.5 h-3.5" />
-                    Associated Traces
+                    Recent References
                   </h4>
                   
                   <div className="space-y-2 max-h-[160px] overflow-y-auto pr-1">
                     {getAssociatedMemories().map((m, idx) => (
-                      <div key={idx} className="p-3 bg-white/2 border border-white/5 rounded-xl text-left text-xs">
+                      <div key={idx} className="p-3 bg-white/1 border border-white/5 rounded-xl text-left text-xs">
                         <div className="flex justify-between items-center mb-1">
-                          <span className="font-bold text-foreground truncate max-w-[130px]">{m.title}</span>
-                          <span className="text-[9px] text-slate-400">{m.displayDate}</span>
+                          <span className="font-bold text-foreground truncate max-w-[130px] font-mono">{m.title}</span>
+                          <span className="text-[9px] text-slate-500 font-medium">{m.displayDate}</span>
                         </div>
-                        <p className="text-slate-400 text-[10px] leading-relaxed line-clamp-2">{m.content}</p>
+                        <p className="text-slate-400 text-[10px] leading-relaxed line-clamp-2 font-medium">{m.content}</p>
                       </div>
                     ))}
                     {getAssociatedMemories().length === 0 && (
-                      <span className="text-[10px] text-slate-500 italic">No specific trace weights mapped.</span>
+                      <span className="text-[10px] text-slate-500 italic">No references mapped.</span>
                     )}
                   </div>
                 </div>
@@ -382,9 +414,9 @@ export const GraphView: React.FC = () => {
           ) : (
             <div className="glass-panel rounded-3xl p-5 border border-white/5 h-full flex flex-col items-center justify-center text-center text-slate-400 p-8">
               <Sparkles className="w-8 h-8 text-primary mb-3 animate-pulse" />
-              <h3 className="font-bold text-sm text-foreground mb-1">Neural Diagnostic Standby</h3>
-              <p className="text-xs text-slate-400 leading-relaxed max-w-xs">
-                Select any node inside the neural network to highlight associated trace vectors, confidence scores, and raw log summaries.
+              <h3 className="font-bold text-sm text-foreground mb-1">Inspector</h3>
+              <p className="text-xs text-slate-400 leading-relaxed max-w-xs font-medium">
+                Select any node on the connection map to view details, linked traces, and verified locations.
               </p>
             </div>
           )}

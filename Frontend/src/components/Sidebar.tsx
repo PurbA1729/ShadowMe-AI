@@ -53,17 +53,17 @@ export const Sidebar: React.FC = () => {
           <BrainCircuit className="w-5 h-5 text-white" />
         </div>
         <div>
-          <h1 className="font-extrabold text-base tracking-wider bg-gradient-to-r from-foreground to-slate-500 bg-clip-text text-transparent">
-            SHADOWME
+          <h1 className="font-extrabold text-base tracking-wider bg-gradient-to-r from-foreground to-slate-400 bg-clip-text text-transparent">
+            SHADOW
           </h1>
           <span className="text-[10px] text-accent font-semibold tracking-widest uppercase">
-            Memory Engine
+            Local Memory Index
           </span>
         </div>
       </div>
 
       {/* Navigation Items */}
-      <nav className="flex-1 space-y-1">
+      <nav className="space-y-1">
         {menuItems.map((item) => {
           const isActive = activeTab === item.id;
           const Icon = item.icon;
@@ -98,8 +98,23 @@ export const Sidebar: React.FC = () => {
         })}
       </nav>
 
+      {/* Local Storage Quota Widget */}
+      <div className="mt-auto border-t border-white/5 pt-5 pb-3">
+        <div className="flex items-center justify-between px-1 mb-2">
+          <span className="text-[9px] text-slate-500 uppercase tracking-widest font-bold">Local Index</span>
+          <span className="text-[10px] text-accent font-mono font-bold">1.2 GB / 10 GB</span>
+        </div>
+        <div className="w-full bg-white/5 rounded-full h-1.5 mb-3">
+          <div className="bg-primary h-1.5 rounded-full w-[12%]" />
+        </div>
+        <div className="flex items-center gap-2 px-1 text-[10px] text-slate-400 font-medium">
+          <div className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
+          <span>Synced locally • Encrypted</span>
+        </div>
+      </div>
+
       {/* User Profile */}
-      <div className="border-t border-white/5 pt-4 mt-auto">
+      <div className="border-t border-white/5 pt-4">
         <div className="flex items-center gap-3 px-2 py-1">
           <div className="w-9 h-9 rounded-full bg-slate-800 border border-white/10 flex items-center justify-center font-bold text-white text-sm bg-gradient-to-br from-primary/30 to-accent/30">
             JD
