@@ -24,7 +24,7 @@ interface SidebarItem {
 }
 
 export const Sidebar: React.FC = () => {
-  const { activeTab, setActiveTab } = useMemory();
+  const { activeTab, setActiveTab, user, logout } = useMemory();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   // Don't show sidebar on landing page
@@ -102,14 +102,14 @@ export const Sidebar: React.FC = () => {
       <div className="border-t border-white/5 pt-4 mt-auto">
         <div className="flex items-center gap-3 px-2 py-1">
           <div className="w-9 h-9 rounded-full bg-slate-800 border border-white/10 flex items-center justify-center font-bold text-white text-sm bg-gradient-to-br from-primary/30 to-accent/30">
-            JD
+            {user?.name ? user.name.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2) : "JD"}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-foreground truncate">John Doe</p>
-            <p className="text-[10px] text-slate-400 truncate">jd.memories@shadow.ai</p>
+            <p className="text-sm font-semibold text-foreground truncate">{user?.name || "John Doe"}</p>
+            <p className="text-[10px] text-slate-400 truncate">{user?.email || user?.phone || "jd.memories@shadow.ai"}</p>
           </div>
           <button 
-            onClick={() => handleNavClick("landing")}
+            onClick={() => logout()}
             className="text-slate-400 hover:text-danger transition-colors cursor-pointer"
             title="Log Out"
           >

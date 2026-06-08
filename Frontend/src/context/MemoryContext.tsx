@@ -38,8 +38,15 @@ export interface ChatMessage {
   sources?: Memory[];
 }
 
+export interface User {
+  name: string;
+  email?: string;
+  phone?: string;
+}
+
 export type TabType = 
   | "landing"
+  | "auth"
   | "dashboard" 
   | "upload" 
   | "replay" 
@@ -66,6 +73,11 @@ interface MemoryContextProps {
   setTheme: (theme: "dark" | "cyberpunk" | "minimal") => void;
   retentionDays: number;
   setRetentionDays: (days: number) => void;
+  isLoggedIn: boolean;
+  user: User | null;
+  login: (credentials: { email?: string; phone?: string; password?: string }) => Promise<void>;
+  register: (profile: { name: string; email?: string; phone?: string; password?: string }) => Promise<void>;
+  logout: () => void;
 }
 
 const MemoryContext = createContext<MemoryContextProps | undefined>(undefined);
@@ -236,6 +248,60 @@ export const MemoryProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const [processingStep, setProcessingStep] = useState(0);
   const [theme, setTheme] = useState<"dark" | "cyberpunk" | "minimal">("minimal");
   const [retentionDays, setRetentionDays] = useState(30);
+  
+  // Authentication states
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [user, setUser] = useState<User | null>(null);
+
+  // Load session from localStorage on mount
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedUser = localStorage.getItem("shadowme_user");
+      const storedLoggedIn = localStorage.getItem("shadowme_is_logged_in");
+      if (storedLoggedIn === "true" && storedUser) {
+        setIsLoggedIn(true);
+        setUser(JSON.parse(storedUser));
+      }
+    }
+  }, []);
+
+  const login = async (credentials: { email?: string; phone?: string; password?: string }) => {
+    // Simulate network latency for a high-end feel
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    const mockUser: User = {
+      name: credentials.email 
+        ? credentials.email.split("@")[0].charAt(0).toUpperCase() + credentials.email.split("@")[0].slice(1)
+        : "User " + (credentials.phone || "").slice(-4),
+      email: credentials.email,
+      phone: credentials.phone
+    };
+    setIsLoggedIn(true);
+    setUser(mockUser);
+    localStorage.setItem("shadowme_user", JSON.stringify(mockUser));
+    localStorage.setItem("shadowme_is_logged_in", "true");
+  };
+
+  const register = async (profile: { name: string; email?: string; phone?: string; password?: string }) => {
+    // Simulate network latency
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    const mockUser: User = {
+      name: profile.name,
+      email: profile.email,
+      phone: profile.phone
+    };
+    setIsLoggedIn(true);
+    setUser(mockUser);
+    localStorage.setItem("shadowme_user", JSON.stringify(mockUser));
+    localStorage.setItem("shadowme_is_logged_in", "true");
+  };
+
+  const logout = () => {
+    setIsLoggedIn(false);
+    setUser(null);
+    localStorage.removeItem("shadowme_user");
+    localStorage.removeItem("shadowme_is_logged_in");
+    setActiveTab("landing");
+  };
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -432,7 +498,12 @@ export const MemoryProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         theme,
         setTheme,
         retentionDays,
-        setRetentionDays
+        setRetentionDays,
+        isLoggedIn,
+        user,
+        login,
+        register,
+        logout
       }}
     >
       {children}
