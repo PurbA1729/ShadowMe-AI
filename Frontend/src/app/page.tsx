@@ -8,6 +8,7 @@ import { AIOrb } from "@/components/AIOrb";
 
 // Import view components
 import { LandingView } from "@/components/views/LandingView";
+import { AuthView } from "@/components/views/AuthView";
 import { DashboardView } from "@/components/views/DashboardView";
 import { UploadView } from "@/components/views/UploadView";
 import { ReplayView } from "@/components/views/ReplayView";
@@ -17,13 +18,22 @@ import { ChatView } from "@/components/views/ChatView";
 import { SettingsView } from "@/components/views/SettingsView";
 
 export default function Home() {
-  const { activeTab } = useMemory();
+  const { activeTab, isLoggedIn, setActiveTab } = useMemory();
+
+  // If a user is not logged in and tries to access console tabs, intercept and send to auth page
+  React.useEffect(() => {
+    if (!isLoggedIn && activeTab !== "landing" && activeTab !== "auth") {
+      setActiveTab("auth");
+    }
+  }, [isLoggedIn, activeTab, setActiveTab]);
 
   // Route/Tab switcher mapping
   const renderActiveView = () => {
     switch (activeTab) {
       case "landing":
         return <LandingView />;
+      case "auth":
+        return <AuthView />;
       case "dashboard":
         return <DashboardView />;
       case "upload":
@@ -43,19 +53,19 @@ export default function Home() {
     }
   };
 
-  // If we are on landing, render full screen view without layout shell
-  if (activeTab === "landing") {
+  // If we are on landing or auth, render full screen view without layout shell
+  if (activeTab === "landing" || activeTab === "auth") {
     return (
       <AnimatePresence mode="wait">
         <motion.div
-          key="landing"
+          key={activeTab}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
           className="w-full min-h-screen"
         >
-          <LandingView />
+          {activeTab === "landing" ? <LandingView /> : <AuthView />}
         </motion.div>
       </AnimatePresence>
     );
